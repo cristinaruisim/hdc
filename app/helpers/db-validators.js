@@ -6,6 +6,7 @@ const {
 
 const {
   findTechnologyIdByName,
+  findTechnologyNameById,
 } = require("../repositories/technologies.repository");
 
 const isExistingEmail = async (email = "") => {
@@ -39,9 +40,17 @@ const isTechnologyExistingByName = async (name) => {
   return tech.id;
 };
 
+const isTechnologyExistingById = async (id) => {
+  const tech = await findTechnologyNameById(id);
+  if (!tech) {
+    throwJsonError(400, `Technology with id: ${id} does not exist.`);
+  }
+};
+
 module.exports = {
   isExistingEmail,
   isExistingUserById,
   isUserActive,
   isTechnologyExistingByName,
+  isTechnologyExistingById,
 };

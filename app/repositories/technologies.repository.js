@@ -9,6 +9,15 @@ async function findTechnologyIdByName(name) {
   return tech[0];
 }
 
+async function findTechnologyNameById(id) {
+  const pool = await DBconnection();
+  const sql = `
+    select name from technologies where id=?`;
+  const [tech] = await pool.query(sql, id);
+  return tech.name;
+}
+
 module.exports = {
+  findTechnologyNameById,
   findTechnologyIdByName,
 };

@@ -1,44 +1,47 @@
 const {
   createNewPost,
-} = require("../controllers/posts/create.new.post.controller");
+} = require("../controllers/posts/create-new-post-controller");
 const { validateJWT } = require("../middlewares/JWT-validator");
 const { check } = require("express-validator");
 const { Router } = require("express");
 const { fieldValidator } = require("../middlewares/field-validator");
 const {
+  isExistingUserById,
+  isTechnologyExistingById,
+} = require("../helpers/db-validators");
+const {
   getAllPosts,
-} = require("../controllers/posts/get.all.posts.controller");
+} = require("../controllers/posts/get-all-posts-controller");
 const { isAdminRole } = require("../middlewares/role-validator");
 const {
   getPostById,
-} = require("../controllers/posts/get.posts.by.id.controller");
+} = require("../controllers/posts/get-posts-by-id-controller");
 
 const router = Router();
 
 router.get(
   "/",
   [
-    // validateJWT,
-    // check("id", "Invalid id.").custom(isExistingUserById),
-    // isAdminRole,
+    validateJWT,
+    check("id", "Invalid id.").custom(isExistingUserById),
+    isAdminRole,
   ],
   getAllPosts
 );
 
 router.get(
   "/:id",
-  [
-    // validateJWT,
-    // check("id", "Invalid id.").custom(isExistingUserById),
-  ],
+  [validateJWT, check("id", "Invalid id.").custom(isExistingUserById)],
   getPostById
 );
 
 router.post(
-  "/newpost",
+  "/",
   [
-    // validateJWT,
-    // check("id", "Invalid id.").custom(isExistingUserById),
+    validateJWT,
+    check("id", "Invalid id.").custom(isExistingUserById),
+    check("tech", "Invalid tech.").custom(isTechnologyExistingById),
+
     check("title", "The title field is required.")
       .not()
       .isEmpty()
